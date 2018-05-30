@@ -12,6 +12,7 @@ int main() {
      arv->inserir(8);
      arv->inserir(6);
      arv->inserir(9);
+     
      arv->inserir(8);
 
      arv->inOrder();

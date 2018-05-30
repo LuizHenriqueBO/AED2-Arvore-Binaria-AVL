@@ -42,7 +42,6 @@ using namespace std;
      private:
 
 
-
           NoAVL* rotacionadorRR(NoAVL* node){/*rotação simples para a direita*/
 
                NoAVL* subArvoreEsquerda = node->get_esq();
