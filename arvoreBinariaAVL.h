@@ -245,7 +245,7 @@ using namespace std;
                     return node;
                }else{
                     if(valor < node->get_dado()){
-                         node->set_esq(removerAVL(node->get_dir(),valor));
+                         node->set_esq(removerAVL(node->get_esq(),valor));
                          node = verificadorDeslocamento(node,valor);
                          return node;
                     }else{
