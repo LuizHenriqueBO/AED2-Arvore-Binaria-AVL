@@ -36,10 +36,13 @@ using namespace std;
                return alt_esq - alt_dir;
           }
 
-
+          void removerAVL(int valor){
+               raiz = removerAVL(raiz, valor);
+          }
 
      protected:
      private:
+
 
 
           NoAVL* rotacionadorRR(NoAVL* node){/*rotação simples para a direita*/
@@ -95,8 +98,6 @@ using namespace std;
 
 
 
-
-
           int max(int alturaEsquesda, int alturaDireida){/*funcao para achar o maior da esquerda ou da direita do no*/
 
                return alturaEsquesda > alturaDireida ? alturaEsquesda : alturaDireida;
@@ -127,6 +128,8 @@ using namespace std;
                     NoAVL* novo = new NoAVL(valor);/*return new NoAVL(valor)*/
                     return novo;
                }
+
+
                /*inserindo o dado na arvore*/
                if(valor < node->get_dado()){
                     node->set_esq(inserir(node->get_esq(),valor));
@@ -140,6 +143,8 @@ using namespace std;
                     }
 
                }else{
+
+
                     /*inserindo o dado na arvore*/
                     if(valor > node->get_dado()){
                          node->set_dir(inserir(node->get_dir(),valor));
@@ -215,6 +220,71 @@ using namespace std;
                     free(n);
                }
           }
+
+
+
+
+
+          NoAVL* removerAVL(NoAVL* node,int valor){
+
+               if(node == NULL){
+                    return NULL;
+               }
+               if(valor > node->get_dado()){
+                    node->set_dir(removerAVL(node->get_dir(),valor));
+                    return node;
+               }else{
+                    if(valor < node->get_dado()){
+                         node->set_esq(removerAVL(node->get_dir(),valor));
+                         return node;
+                    }else{
+
+                         /*quando o valor é igual--- nem precisa dessa comparação!!!*/
+                         if(valor == node->get_dado()){
+                              if ((node->get_esq == NULL) && (node->get_dir()== NULL)) {
+                                   delete node;
+                                   return NULL;
+
+                              }else{
+                                   NoAVL* aux = NULL;
+                                   if(n->get_esq() == NULL){/*se só tem o filho direito*/
+                                        aux = node->get_dir();
+                                        delete node;
+                                        return aux;
+                                   }else if (node->get_dir() == NULL) {/*se só tem o filho esquerdo*/
+                                        aux = node->get_esq();
+                                        delete node;
+                                        return aux;
+
+                                   }else {/*se o nó tem os dois filhos*/
+
+                                        aux = node->get_esq();
+                                        while(aux->get_dir() != NULL){
+                                             aux = aux->get_dir();
+                                        }
+                                        node->set_dado(aux->get_dado());
+                                        node->set_esq(removerAVL(node->get_esq(),aux->get_dado()));
+                                        return node;
+                                   }
+                              }
+                         }
+                    }
+               }
+          }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
      };
 #endif
