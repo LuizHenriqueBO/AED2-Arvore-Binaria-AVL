@@ -31,7 +31,7 @@ int main() {
 
      arv->inOrder();
      cout << '\n';
-     arv->removerAVL(30);
+     arv->removerAVL(50);
      arv->inOrder();
      cout <<'\n';
      //arv->imprime();

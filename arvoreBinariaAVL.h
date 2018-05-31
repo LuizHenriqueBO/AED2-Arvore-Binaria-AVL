@@ -25,6 +25,12 @@ using namespace std;
 
                raiz = inserir(raiz,valor);
           }
+          void posOrder(){
+               posOrder(raiz);
+          }
+          void preOrder(){
+               preOrder(raiz);
+          }
           /*void remover(int elem){
                raiz = remove(elem,raiz);
           }*/
@@ -122,7 +128,31 @@ using namespace std;
                }
           }
 
+         void preOrder(NoAVL *no) {
+             if (no != NULL) {
+                 cout << no->get_dado() << " ";
+                 preOrder(no->get_esq());
+                 preOrder(no->get_dir());
+             }
+         }
 
+         void posOrder(NoAVL *no) {
+             if (no != NULL) {
+                 posOrder(no->get_esq());
+                 posOrder(no->get_dir());
+                 cout << no->get_dado() << " ";
+             }
+         }
+
+         // void inOrder(NoAVL *no, int k) {
+         //     if (no != NULL) {
+         //         cout << " " << string(k * 2, '-') << "|" <<no->get_dado() << endl;
+         //         inOrder(no->get_esq(), k + 1);
+         //         inOrder(no->get_dir(), k + 1);
+         //     }
+         // }
+
+          /*Função que verifica se é necessário efetuar uma rotação ou não....*/
           NoAVL* verificadorDeslocamento(NoAVL* node,int valor){/*criar uma variável pra diminuir o processamento*/
                if((altura(node->get_esq()) - altura(node->get_dir())) == -2){
                     if(valor > node->get_dir()->get_dado()){
@@ -144,9 +174,7 @@ using namespace std;
 
 
 
-
-
-
+          /*metodo de inserção!*/
           NoAVL* inserir(NoAVL* node, int valor){
                if(node == NULL){
                     NoAVL* novo = new NoAVL(valor);/*return new NoAVL(valor)*/
