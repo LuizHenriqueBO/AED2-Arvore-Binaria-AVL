@@ -25,14 +25,13 @@ using namespace std;
 
                raiz = inserir(raiz,valor);
           }
-          void remover(int elem){
+          /*void remover(int elem){
                raiz = remove(elem,raiz);
-          }
+          }*/
 
 
 
           int fatorBalanceamento(int alt_esq, int alt_dir){
-
                return alt_esq - alt_dir;
           }
 
@@ -47,6 +46,7 @@ using namespace std;
 
           NoAVL* rotacionadorRR(NoAVL* node){/*rotação simples para a direita*/
 
+               cout << "...RR" << '\n';
                NoAVL* subArvoreEsquerda = node->get_esq();
                node->set_esq(subArvoreEsquerda->get_dir());
                subArvoreEsquerda->set_dir(node);
@@ -59,7 +59,7 @@ using namespace std;
           }
 
           NoAVL* rotacionadorLL(NoAVL* node){/*rotação simples para a esquerda*/
-
+               cout << "...LL" << '\n';
                NoAVL* subArvoreDireita = node->get_dir();
                node->set_dir(subArvoreDireita->get_esq());
                subArvoreDireita->set_esq(node);
@@ -71,11 +71,13 @@ using namespace std;
           }
 
           NoAVL* rotacionadorLR(NoAVL* node){/*ROTAÇÃO COMPLEXA PARA DIREITA E ESQUERDA*/
+               cout << "...LR" << '\n';
                node->set_dir(rotacionadorRR(node->get_dir()));
                return rotacionadorLL(node);
           }
 
           NoAVL* rotacionadorRL(NoAVL* node){/*ROTAÇÃO COMPLEXA PARA ESQUERDA E DIREITA*/
+               cout << "...RL" << '\n';
                node->set_esq(rotacionadorLL(node->get_esq()));
                return rotacionadorRR(node);
           }
@@ -95,7 +97,6 @@ using namespace std;
 
 
 */
-
 
 
           int max(int alturaEsquesda, int alturaDireida){/*funcao para achar o maior da esquerda ou da direita do no*/
@@ -122,40 +123,19 @@ using namespace std;
           }
 
 
-
-          NoAVL* inserir(NoAVL* node, int valor){
-               if(node == NULL){
-                    NoAVL* novo = new NoAVL(valor);/*return new NoAVL(valor)*/
-                    return novo;
-               }
-
-
-               /*inserindo o dado na arvore*/
-               if(valor < node->get_dado()){
-                    node->set_esq(inserir(node->get_esq(),valor));
-                    /*verificando o desbalanceamento*/
-                    if((altura(node->get_dir()) - altura(node->get_esq())) == -2){
-                         if(valor < node->get_esq()->get_dado()){
-                              node = rotacionadorRR(node);
-                         }else{
-                              node = rotacionadorRL(node);
-                         }
+          NoAVL* verificadorDeslocamento(NoAVL* node,int valor){/*criar uma variável pra diminuir o processamento*/
+               if((altura(node->get_dir()) - altura(node->get_esq())) == -2){
+                    if(valor < node->get_esq()->get_dado()){
+                         node = rotacionadorRR(node);
+                    }else{
+                         node = rotacionadorRL(node);
                     }
-
-               }else{
-
-
-                    /*inserindo o dado na arvore*/
-                    if(valor > node->get_dado()){
-                         node->set_dir(inserir(node->get_dir(),valor));
-                         /*verificando o desbalanceamento*/
-                         if((altura(node->get_dir()) - altura(node->get_esq())) == 2){
-                              if(valor > node->get_dir()->get_dado()){
-                                   node = rotacionadorLL(node);
-                              }else{
-                                   node = rotacionadorLR(node);
-                              }
-                         }
+               }
+               else if((altura(node->get_dir()) - altura(node->get_esq())) == 2){
+                    if(valor > node->get_dir()->get_dado()){
+                         node = rotacionadorLL(node);
+                    }else{
+                         node = rotacionadorLR(node);
                     }
                }
                node->set_altura(max(altura(node->get_esq()), altura(node->get_dir())) + 1);
@@ -163,53 +143,79 @@ using namespace std;
           }
 
 
-///////////*********funcao de remoção recursiva*************/////////////
 
-          NoAVL* remove(int elem, NoAVL* n){/*Remover recursivo*/
-               if(n == NULL){
-                    return NULL;
+
+
+
+          NoAVL* inserir(NoAVL* node, int valor){
+               if(node == NULL){
+                    NoAVL* novo = new NoAVL(valor);/*return new NoAVL(valor)*/
+                    return novo;
                }
+               /*inserindo o dado na arvore*/
+               if(valor < node->get_dado()){
+                    node->set_esq(inserir(node->get_esq(),valor));
+                    /*verificando o desbalanceamento*/
+                    node = verificadorDeslocamento(node,valor);
+               }else{
+                    /*inserindo o dado na arvore*/
+                    if(valor > node->get_dado()){
+                         node->set_dir(inserir(node->get_dir(),valor));
+                         /*verificando o desbalanceamento*/
+                         node = verificadorDeslocamento(node,valor);
+                         return node;
 
-               if(n!=NULL){
-                    if(n->get_dado() < elem){
-                         n->set_dir( remove(elem, n->get_dir()) );
-                         return n;
-                    }
-                    else if(n->get_dado() > elem){
-                         n->set_esq( remove(elem, n->get_esq()) );
-                         return n;
-                    }
-                    else{
-                         if (n->get_esq()==NULL && n->get_dir()==NULL){
-                              free(n);
-
-                              return NULL;
-                         }
-                         else if (n->get_esq()==NULL && n->get_dir()!=NULL){
-                              NoAVL* aux = n->get_dir();
-                              free(n);
-
-                              return aux;
-                         }
-                         else if (n->get_esq()!=NULL && n->get_dir()==NULL){
-                              NoAVL* aux = n->get_esq();
-                              free(n);
-
-                              return aux;
-                         }
-                         else{
-                              NoAVL* m = n->get_dir();
-                              while (m->get_esq()!=NULL){
-                                   m = m->get_esq();
-                              }
-                              n->set_dado(m->get_dado());
-                              m->set_dado(elem);
-
-                              n->set_dir(remove(elem, n->get_dir()));
-                         }
                     }
                }
           }
+
+///////////*********funcao de remoção recursiva*************/////////////
+
+          // NoAVL* remove(int elem, NoAVL* n){/*Remover recursivo*/
+          //      if(n == NULL){
+          //           return NULL;
+          //      }
+          //
+          //      if(n!=NULL){
+          //           if(n->get_dado() < elem){
+          //                n->set_dir( remove(elem, n->get_dir()) );
+          //                return n;
+          //           }
+          //           else if(n->get_dado() > elem){
+          //                n->set_esq( remove(elem, n->get_esq()) );
+          //                return n;
+          //           }
+          //           else{
+          //                if (n->get_esq()==NULL && n->get_dir()==NULL){
+          //                     free(n);
+          //
+          //                     return NULL;
+          //                }
+          //                else if (n->get_esq()==NULL && n->get_dir()!=NULL){
+          //                     NoAVL* aux = n->get_dir();
+          //                     free(n);
+          //
+          //                     return aux;
+          //                }
+          //                else if (n->get_esq()!=NULL && n->get_dir()==NULL){
+          //                     NoAVL* aux = n->get_esq();
+          //                     free(n);
+          //
+          //                     return aux;
+          //                }
+          //                else{
+          //                     NoAVL* m = n->get_dir();
+          //                     while (m->get_esq()!=NULL){
+          //                          m = m->get_esq();
+          //                     }
+          //                     n->set_dado(m->get_dado());
+          //                     m->set_dado(elem);
+          //
+          //                     n->set_dir(remove(elem, n->get_dir()));
+          //                }
+          //           }
+          //      }
+          // }
 
 
 
@@ -230,24 +236,29 @@ using namespace std;
                if(node == NULL){
                     return NULL;
                }
+
+               NoAVL* aux;
+
                if(valor > node->get_dado()){
                     node->set_dir(removerAVL(node->get_dir(),valor));
+                    node = verificadorDeslocamento(node,valor);
                     return node;
                }else{
                     if(valor < node->get_dado()){
                          node->set_esq(removerAVL(node->get_dir(),valor));
+                         node = verificadorDeslocamento(node,valor);
                          return node;
                     }else{
 
                          /*quando o valor é igual--- nem precisa dessa comparação!!!*/
                          if(valor == node->get_dado()){
-                              if ((node->get_esq == NULL) && (node->get_dir()== NULL)) {
+                              if ((node->get_esq() == NULL) && (node->get_dir()== NULL)) {
                                    delete node;
                                    return NULL;
 
                               }else{
                                    NoAVL* aux = NULL;
-                                   if(n->get_esq() == NULL){/*se só tem o filho direito*/
+                                   if(node->get_esq() == NULL){/*se só tem o filho direito*/
                                         aux = node->get_dir();
                                         delete node;
                                         return aux;
@@ -271,20 +282,5 @@ using namespace std;
                     }
                }
           }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
      };
 #endif
