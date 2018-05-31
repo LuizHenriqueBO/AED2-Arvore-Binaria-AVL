@@ -124,18 +124,18 @@ using namespace std;
 
 
           NoAVL* verificadorDeslocamento(NoAVL* node,int valor){/*criar uma variável pra diminuir o processamento*/
-               if((altura(node->get_dir()) - altura(node->get_esq())) == -2){
-                    if(valor < node->get_esq()->get_dado()){
-                         node = rotacionadorRR(node);
-                    }else{
-                         node = rotacionadorRL(node);
-                    }
-               }
-               else if((altura(node->get_dir()) - altura(node->get_esq())) == 2){
+               if((altura(node->get_esq()) - altura(node->get_dir())) == -2){
                     if(valor > node->get_dir()->get_dado()){
                          node = rotacionadorLL(node);
                     }else{
                          node = rotacionadorLR(node);
+                    }
+               }
+               else if((altura(node->get_esq()) - altura(node->get_dir())) == 2){
+                    if(valor < node->get_esq()->get_dado()){
+                         node = rotacionadorRR(node);
+                    }else{
+                         node = rotacionadorRL(node);
                     }
                }
                node->set_altura(max(altura(node->get_esq()), altura(node->get_dir())) + 1);
